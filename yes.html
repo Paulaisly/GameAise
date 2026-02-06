@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Surprise</title>
+    <link rel="stylesheet" href="./yes_style.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        /* Pinaka-importante: Alisin ang limit sa body at html */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden; /* Iwas horizontal scroll sa body */
+        }
+
+        .hidden { display: none !important; }
+        .fade-in { animation: fadeIn 1s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .btn {
+            background-color: #a10d23;
+            color: white;
+            padding: 15px 32px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 12px;
+            transition: 0.3s;
+            margin: 10px;
+        }
+        .btn:hover { background-color: #f19cbf; }
+
+        /* Draggable style */
+        .draggable {
+            position: absolute;
+            cursor: move;
+            user-select: none;
+            z-index: 10;
+            touch-action: none; /* Para sa smooth mobile drag */
+            will-change: transform; /* Performance boost */
+        }
+
+        /* PHASE 3 CONTAINER - Walang limit */
+        #phase3 {
+            position: fixed; /* Fixed para kahit mag-scroll, andyan pa rin */
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: visible; /* Hahayaan ang images lumabas sa view */
+        }
+
+        .simple-secret-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #f19cbf;
+            color: white;
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            border: none;
+            z-index: 1; 
+            text-decoration: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+    </style>
+</head> 
+<body>
+    <div class="container">
+        <div id="phase1" class="fade-in" style="text-align: center;">
+            <h1 class="header_text" style="color: #9a0909;">Yeeeyyyy!!</h1>
+            <div class="gif_container">
+                <img src="https://media0.giphy.com/media/T86i6yDyOYz7J6dPhf/giphy.gif" alt="Cute animated illustration">
+            </div>
+            <button class="btn" onclick="showPhase2()">Next ➜</button>
+        </div>
+
+        <div id="phase2" class="hidden fade-in" style="text-align: center;">
+            <h1 class="header_text" style="color: #9a0909;">
+                Saan mo gusto? Pero may plano na ako, baka may gusto ka lang gawin sa Valentine?
+            </h1>
+            <div class="gif_container">
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueWp3eTYycW9ueXByNXpueXF4eHh4eHh4eHh4eHh4eHh4eHh4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/3oriO0OEd9QIDdllqo/giphy.gif" alt="Thinking cat">
+            </div>
+            <div class="buttons">
+                <button class="btn" onclick="showFinalMessage('Yes')">Yes, may suggest ako!</button>
+                <button class="btn" onclick="showFinalMessage('No')">No, okay na ako sa plan mo</button>
+            </div>
+        </div>
+
+        <div id="phase3" class="hidden">
+            <h1 class="header_text" id="finalText" style="color: #9a0909; text-align: center; margin-top: 20px; pointer-events: none;"></h1>
+            
+            <button class="simple-secret-btn" onclick="location.href='secret.html'">
+                ❤️
+            </button>
+
+            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbHdvdGhjYzNvMHVubGM2NTY2Ym41eTEzamdpOGFramtjY3Exb3o3diZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/tFqKgC5KSoZRm/giphy.gif" 
+                 class="draggable" style="top: 20%; left: 5%; width: 600px;">
+
+            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdzA5cWhibHpob3pucXduMTV1d3R4b2VnY2pydWNmN2ppZXc1ODJ5diZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/euW6JDwrMn0BqyNC8t/giphy.gif" 
+                 class="draggable" id="mainCover" style="top: 29%; left: 36%; width: 500px;">
+
+            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbHdvdGhjYzNvMHVubGM2NTY2Ym41eTEzamdpOGFramtjY3Exb3o3diZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/wIUQQ07BHzDry/giphy.gif" 
+                 class="draggable" style="top: 20%; left: 60%; width: 500px;">
+        </div>
+    </div>
+
+    <script>
+        function showPhase2() {
+            document.getElementById('phase1').classList.add('hidden');
+            document.getElementById('phase2').classList.remove('hidden');
+        }
+
+        function showFinalMessage(choice) {
+            document.getElementById('phase2').classList.add('hidden');
+            document.getElementById('phase3').classList.remove('hidden');
+            
+            const finalTxt = document.getElementById('finalText');
+            finalTxt.innerText = (choice === 'Yes') ? "Yown! Sabihin mo sakin iplano natin yun nasa isip mo ❤️" : "Sige, ako na bahala sa date natin ❤️";
+            
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            makeDraggable();
+        }
+
+        function makeDraggable() {
+            const elements = document.querySelectorAll('.draggable');
+            let topIndex = 100;
+
+            elements.forEach(el => {
+                let isDragging = false;
+                let startX, startY, initialLeft, initialTop;
+
+                // Gamit tayo ng Pointer Events para sa desktop at mobile
+                el.onpointerdown = function(e) {
+                    isDragging = true;
+                    el.style.zIndex = ++topIndex; // Palaging nasa ibabaw ang huling hinawakan
+                    
+                    startX = e.clientX;
+                    startY = e.clientY;
+                    initialLeft = el.offsetLeft;
+                    initialTop = el.offsetTop;
+
+                    el.setPointerCapture(e.pointerId); // "Kandado" ang mouse sa element
+                };
+
+                el.onpointermove = function(e) {
+                    if (!isDragging) return;
+                    
+                    let dx = e.clientX - startX;
+                    let dy = e.clientY - startY;
+                    
+                    // Direct positioning nang walang clamp/limit
+                    el.style.left = (initialLeft + dx) + "px";
+                    el.style.top = (initialTop + dy) + "px";
+                };
+
+                el.onpointerup = function(e) {
+                    isDragging = false;
+                    el.releasePointerCapture(e.pointerId);
+                };
+            });
+        }
+    </script>
+</body> 
+</html>
